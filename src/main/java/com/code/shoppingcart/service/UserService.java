@@ -15,7 +15,4 @@ public interface UserService extends UserDetailsService {
 
     UserEntity getUserDetailsByEmail(String email);
 
-    void save(UserEntity userEntity);
-
-
 }

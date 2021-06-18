@@ -1,16 +1,20 @@
 package com.code.shoppingcart.model;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
-@Table(name = "role")
-@Entity
-@EqualsAndHashCode(callSuper = true)
-public class RoleEntity extends BaseModel {
+@Entity(name = "role")
+public class RoleEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String role;
 

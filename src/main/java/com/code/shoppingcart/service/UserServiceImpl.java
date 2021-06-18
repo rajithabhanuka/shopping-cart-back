@@ -3,6 +3,7 @@ package com.code.shoppingcart.service;
 
 import com.code.shoppingcart.dto.ResponseDto;
 import com.code.shoppingcart.dto.user.UserDto;
+import com.code.shoppingcart.exceptions.DuplicateRecordException;
 import com.code.shoppingcart.model.UserEntity;
 import com.code.shoppingcart.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 
 @Slf4j
@@ -38,11 +40,18 @@ public class UserServiceImpl implements UserService, BaseSpecification {
 
     @Override
     public ResponseEntity<ResponseDto> create(UserDto userDto) {
-
         UserEntity userEntity = userDto.toEntity();
-        userEntity.setPassword(this.encryptPassword(userDto.getPassword()));
-        userEntity.setActive(false);
-        userEntity = userRepository.save(userEntity);
+
+        try {
+            userEntity.setPassword(this.encryptPassword(userDto.getPassword()));
+            userEntity = userRepository.save(userEntity);
+
+        } catch (Exception e) {
+            if (e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException){
+                throw new DuplicateRecordException(e.getMessage(), userDto.getEmail());
+            }
+            log.error("ERROR WHILE SAVING USER OBJECT");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(userEntity.toDto());
     }
 
@@ -74,12 +83,5 @@ public class UserServiceImpl implements UserService, BaseSpecification {
 
         return entity;
     }
-
-
-    @Override
-    public void save(UserEntity userEntity) {
-        userRepository.save(userEntity);
-    }
-
 
 }

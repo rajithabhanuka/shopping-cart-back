@@ -13,16 +13,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class JwtAuthenticationController {
+public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
 
     @Autowired
-    public JwtAuthenticationController(AuthenticationManager authenticationManager,
-                                       JwtTokenUtil jwtTokenUtil,
-                                       UserService userService) {
+    public AuthenticationController(AuthenticationManager authenticationManager,
+                                    JwtTokenUtil jwtTokenUtil,
+                                    UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
