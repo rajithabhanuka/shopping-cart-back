@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.code</groupId>
-	<artifactId>shopping-cart</artifactId>
+	<artifactId>shopping-cart-back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>shopping-cart</name>
+	<name>shopping-cart-back</name>
 	<description>Project for 99X</description>
 	<properties>
 		<java.version>1.8</java.version>
