@@ -15,7 +15,7 @@ public class ProductDto implements ResponseDto{
     private String name;
 
     @JsonProperty(value = "units_per_cartoon")
-    private Double unitsPerCartoon;
+    private Integer unitsPerCartoon;
 
     @JsonProperty(value = "price_per_cartoon")
     private Double pricePerCartoon;

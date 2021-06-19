@@ -10,8 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 public class ShoppingCartApplication {
 
-	@Value("${public-url}")
-	private String publicUrl;
 
 	@Value("${front.end-url}")
 	private String frontEndUrl;
@@ -25,10 +23,7 @@ public class ShoppingCartApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping(publicUrl)
-						.allowedOrigins(
-								frontEndUrl
-						);
+				registry.addMapping(frontEndUrl);
 			}
 		};
 	}

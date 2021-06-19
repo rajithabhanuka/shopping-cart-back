@@ -18,12 +18,12 @@ public class ProductEntity {
     private String name;
 
     @Column(name = "units_per_cartoon", nullable = false)
-    private Double unitsPerCartoon;
+    private int unitsPerCartoon;
 
     @Column(name = "price_per_cartoon", nullable = false)
     private Double pricePerCartoon;
 
-    @Column(name = "unit_discount", nullable = false, columnDefinition = "DOUBLE default 1.3")
+    @Column(name = "unit_discount", nullable = false, columnDefinition = "DOUBLE default 0.3")
     private Double unitDiscount;
 
     @Column(name = "cartoon_discount", nullable = false, columnDefinition = "DOUBLE default 0.1")

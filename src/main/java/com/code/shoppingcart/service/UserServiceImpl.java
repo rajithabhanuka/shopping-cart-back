@@ -21,7 +21,7 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class UserServiceImpl implements UserService, BaseSpecification {
+public class UserServiceImpl implements UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
