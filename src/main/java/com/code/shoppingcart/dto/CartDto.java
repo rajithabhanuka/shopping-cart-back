@@ -25,6 +25,9 @@ public class CartDto {
     @JsonProperty(value = "order_type")
     private String orderType;
 
+    @JsonProperty(value = "product_name")
+    private String productName;
+
     public CartEntity toEntity() {
         CartEntity userEntity = new CartEntity();
         BeanUtils.copyProperties(this, userEntity);

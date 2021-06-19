@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,21 +59,23 @@ public class CartServiceImpl implements CartService {
             } else {
 
                 qty = dto.getQty();
-                price = (dto.getQty() * productEntity.getPricePerCartoon() / productEntity.getUnitsPerCartoon())
-                        + productEntity.getUnitDiscount() / 100;
+                price = (productEntity.getPricePerCartoon() / productEntity.getUnitsPerCartoon() * dto.getQty())
+                        * (1 + productEntity.getUnitDiscount());
 
             }
 
-            CartEntity cartEntity = null;
+            CartEntity cartEntity;
             Optional<CartEntity> existing = cartRepository.findByUserIdAndProductId(dto.getUserId(), dto.getProductId());
 
-            if (existing.isPresent()){
+            double roundedPrice = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+            if (existing.isPresent()) {
                 cartEntity = existing.get();
-                cartEntity.setPrice(cartEntity.getPrice() + price);
+                cartEntity.setPrice(cartEntity.getPrice() + roundedPrice);
                 cartEntity.setQty(cartEntity.getQty() + qty);
-            }else{
+            } else {
                 cartEntity = dto.toEntity();
-                cartEntity.setPrice(price);
+                cartEntity.setPrice(roundedPrice);
                 cartEntity.setQty(qty);
             }
 
@@ -89,5 +93,33 @@ public class CartServiceImpl implements CartService {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(genericPage);
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getByUserId(int userId) {
+
+        GenericPage<CartDto> genericPage = new GenericPage<>();
+
+        Page<CartEntity> cartEntityPage = cartRepository
+                .findByUserId(userId,
+                        PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
+
+        genericPage.setData(cartEntityPage.stream().map(this::setProductName).collect(Collectors.toList()));
+        BeanUtils.copyProperties(cartEntityPage, genericPage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(genericPage);
+    }
+
+    CartDto setProductName(CartEntity cartEntity) {
+
+        ProductEntity productEntity = productRepository.findById(cartEntity.getProductId()).orElseThrow(() ->
+                new RecordNotFoundException(String.format("Product object not found for : %s",
+                        cartEntity.getProductId()), ""));
+
+        CartDto cartDto = cartEntity.toDto();
+        cartDto.setProductName(productEntity.getName());
+
+        return cartDto;
+
     }
 }
