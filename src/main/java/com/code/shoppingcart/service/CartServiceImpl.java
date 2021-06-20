@@ -82,7 +82,7 @@ public class CartServiceImpl implements CartService {
             cartRepository.save(cartEntity);
 
             Page<CartEntity> cartEntityPage = cartRepository
-                    .findByUserIdAndProductId(dto.getProductId(), dto.getUserId(),
+                    .findByUserId(dto.getUserId(),
                             PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
 
             genericPage.setData(cartEntityPage.stream().map(CartEntity::toDto).collect(Collectors.toList()));
