@@ -27,6 +27,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ResponseEntity<ResponseDto> create(ProductDto dto) {
+
+        ProductEntity productEntity = dto.toEntity();
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(productRepository.save(productEntity).toDto());
+    }
+
+    @Override
     public ResponseEntity<ResponseDto> getAll(int page, int size) {
 
         Page<ProductEntity> productEntityPage = productRepository
