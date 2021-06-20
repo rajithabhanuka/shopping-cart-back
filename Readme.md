@@ -72,4 +72,5 @@ curl --location --request GET 'http://localhost:8080/api/carts?userId=1' \
 
 ![Optional Text](src/main/resources/static/9.png) 
 
-![Optional Text](src/main/resources/static/10.png)   
+![Optional Text](src/main/resources/static/10.png) 
+
