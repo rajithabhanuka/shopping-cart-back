@@ -54,3 +54,22 @@ curl --location --request GET 'http://localhost:8080/api/carts?userId=1' \
 
 ###Navigation Of the Application
 
+![Optional Text](src/main/resources/static/1.png) 
+
+![Optional Text](src/main/resources/static/2.png) 
+
+![Optional Text](src/main/resources/static/3.png) 
+
+![Optional Text](src/main/resources/static/4.png) 
+
+![Optional Text](src/main/resources/static/6.png) 
+
+![Optional Text](src/main/resources/static/6.png) 
+
+![Optional Text](src/main/resources/static/7.png) 
+
+![Optional Text](src/main/resources/static/8.png) 
+
+![Optional Text](src/main/resources/static/9.png) 
+
+![Optional Text](src/main/resources/static/10.png)   
