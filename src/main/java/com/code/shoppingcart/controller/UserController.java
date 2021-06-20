@@ -23,7 +23,7 @@ public class UserController {
 
     /**
      *
-     * @param userDto
+     * @param userDto user object to be saved
      * @return response entity with saved user details
      */
     @PostMapping

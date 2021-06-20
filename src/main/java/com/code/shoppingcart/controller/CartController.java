@@ -27,7 +27,7 @@ public class CartController {
 
     /**
      *
-     * @param userId
+     * @param userId logged user id
      * @return list of cart items with the pagination
      */
     @GetMapping

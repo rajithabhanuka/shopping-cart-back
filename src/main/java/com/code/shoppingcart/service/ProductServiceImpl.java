@@ -37,8 +37,8 @@ public class ProductServiceImpl implements ProductService{
 
     /**
      *
-     * @param page
-     * @param size
+     * @param page for pagination
+     * @param size for pagination
      * @return al the products with pagination
      */
     @Override

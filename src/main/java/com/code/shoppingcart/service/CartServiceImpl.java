@@ -119,7 +119,7 @@ public class CartServiceImpl implements CartService {
 
     /**
      *
-     * @param userId
+     * @param userId logged user id
      * @return list of cart items with the pagination
      */
     @Override
@@ -152,8 +152,8 @@ public class CartServiceImpl implements CartService {
 
     /**
      *
-     * @param qty
-     * @param productEntity
+     * @param qty is final calculated qty
+     * @param productEntity current product entity
      * @return the final value of the each items qty
      */
     private double calculatePrice(int qty, ProductEntity productEntity) {

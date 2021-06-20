@@ -34,7 +34,7 @@ public class AuthenticationController {
 
     /**
      *
-     * @param request
+     * @param request the request is comming from front end
      * @return the Jwt token with user details
      */
     @PostMapping(value = "/authenticate")
