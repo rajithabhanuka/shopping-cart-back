@@ -1,5 +1,7 @@
 package com.code.shoppingcart.dto.jwt;
 
+import com.code.shoppingcart.dto.user.UserDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,4 +14,8 @@ public class JwtResponse implements Serializable {
 
     @Getter
     private final String jwtToken;
+
+    @Getter
+    @JsonProperty(value = "user")
+    private final UserDto userDto;
 }

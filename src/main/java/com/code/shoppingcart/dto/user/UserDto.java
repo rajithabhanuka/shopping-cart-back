@@ -13,6 +13,9 @@ import java.sql.Timestamp;
 @Data
 public class UserDto implements ResponseDto {
 
+    private int id;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Pattern(regexp = "^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})*$", message = "Invalid Email")
     @NotBlank(message = "Email can't be empty")
     private String email;
@@ -32,14 +35,12 @@ public class UserDto implements ResponseDto {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @JsonProperty("created_at")
+
+    @JsonProperty(value = "created_at", access = JsonProperty.Access.WRITE_ONLY)
     private Timestamp createdAt;
 
     @JsonProperty("role_id")
     private int roleId;
-
-    @JsonProperty("role_name")
-    private String roleName;
 
     public UserEntity toEntity() {
         UserEntity userEntity = new UserEntity();
