@@ -52,25 +52,35 @@ curl --location --request GET 'http://localhost:8080/api/carts?userId=1' \
 5. Go to the browser and ```type http://localhost:4200```
 6. Use the credentials which used to create an account above
 
-###Navigation Of the Application
+###Navigation Of the Application 
 
+1.
 ![Optional Text](src/main/resources/static/1.png) 
 
+2. 
 ![Optional Text](src/main/resources/static/2.png) 
 
+3. 
 ![Optional Text](src/main/resources/static/3.png) 
 
+4. 
 ![Optional Text](src/main/resources/static/4.png) 
 
+5. 
 ![Optional Text](src/main/resources/static/5.png) 
 
+6. 
 ![Optional Text](src/main/resources/static/6.png) 
 
+7. 
 ![Optional Text](src/main/resources/static/7.png) 
 
+8. 
 ![Optional Text](src/main/resources/static/8.png) 
 
+9. 
 ![Optional Text](src/main/resources/static/9.png) 
 
+10. 
 ![Optional Text](src/main/resources/static/10.png) 
 
