@@ -38,7 +38,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> create(CartDto dto) {
+    public ResponseEntity<ResponseDto> addToCart(CartDto dto) {
 
         ProductEntity productEntity = productRepository.findById(dto.getProductId()).orElseThrow(() ->
                 new RecordNotFoundException(String.format("Product object not found for : %s",
@@ -83,41 +83,7 @@ public class CartServiceImpl implements CartService {
                 log.info("MINIMUM ELIGIBLE UNITS FOR DISCOUNT: {}", minimumQtyToDiscount);
 
                 // Checking whether entered qty eligible or not
-                if (qty >= minimumQtyToDiscount) {
-
-                    // Calculate the excess qty
-                    int excessQty = (qty % productEntity.getUnitsPerCartoon());
-
-                    // Calculate cartoons
-                    int cartoons = (qty / productEntity.getUnitsPerCartoon());
-
-                    log.info("CARTOONS: {} , UNITS {} ", cartoons, excessQty);
-
-                    double cartoonsPrice;
-
-                    if (cartoons >= productEntity.getDiscountEligibility()) {
-
-                        // Applying discount for cartoons if eligible
-                        cartoonsPrice = (cartoons * (1 - (productEntity.getCartoonDiscount())) * productEntity.getPricePerCartoon());
-                    }else{
-                        // if not calculate as usual
-                        cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
-                    }
-
-                    // calculate price for excess qty it should multiply by 1 + penalty discount
-                    double priceForExcessUnits = excessQty * (productEntity.getPricePerCartoon() * (1 + productEntity.getUnitDiscount())) / productEntity.getUnitsPerCartoon();
-
-                    log.info("CARTOONS PRICE: {} , UNITS PRICE {} ", cartoonsPrice, priceForExcessUnits);
-
-                    price = cartoonsPrice + priceForExcessUnits;
-
-                    price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
-
-                }else{
-
-                    price = calculatePrice(qty, productEntity);
-
-                }
+                price = calculatePrice(qty, productEntity);
 
                 cartEntity = existing.get();
                 cartEntity.setPrice(price);
@@ -133,7 +99,7 @@ public class CartServiceImpl implements CartService {
             cartRepository.save(cartEntity);
 
             Page<CartEntity> cartEntityPage = cartRepository
-                    .findByUserId(dto.getUserId(),
+                    .findByUserIdAndQtyGreaterThan(dto.getUserId(), 0,
                             PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
 
             genericPage.setData(cartEntityPage.stream().map(CartEntity::toDto).collect(Collectors.toList()));
@@ -152,7 +118,7 @@ public class CartServiceImpl implements CartService {
         GenericPage<CartDto> genericPage = new GenericPage<>();
 
         Page<CartEntity> cartEntityPage = cartRepository
-                .findByUserId(userId,
+                .findByUserIdAndQtyGreaterThan(userId, 0,
                         PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
 
         genericPage.setData(cartEntityPage.stream().map(this::setProductName).collect(Collectors.toList()));
@@ -174,7 +140,7 @@ public class CartServiceImpl implements CartService {
 
     }
 
-    private double calculatePrice(int qty, ProductEntity productEntity){
+    private double calculatePrice(int qty, ProductEntity productEntity) {
 
         double price;
 
@@ -186,8 +152,16 @@ public class CartServiceImpl implements CartService {
 
         log.info("CARTOONS: {} , UNITS {} ", cartoons, excessQty);
 
-        // calculate as usual
-        double cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
+        double cartoonsPrice;
+
+        if (cartoons >= productEntity.getDiscountEligibility()) {
+
+            // Applying discount for cartoons if eligible
+            cartoonsPrice = (cartoons * (1 - (productEntity.getCartoonDiscount())) * productEntity.getPricePerCartoon());
+        } else {
+            // if not calculate as usual
+            cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
+        }
 
         // calculate price for excess qty it should multiply by 1 + penalty discount
         double priceForExcessUnits = excessQty * (productEntity.getPricePerCartoon() * (1 + productEntity.getUnitDiscount())) / productEntity.getUnitsPerCartoon();

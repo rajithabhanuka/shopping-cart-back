@@ -14,6 +14,6 @@ public interface CartRepository extends JpaRepository<CartEntity, Integer> {
 
     Optional<CartEntity> findByUserIdAndProductId(int userId, int productId);
 
-    Page<CartEntity> findByUserId(int userId, Pageable pageable);
+    Page<CartEntity> findByUserIdAndQtyGreaterThan(int userId, int qty, Pageable pageable);
 
 }

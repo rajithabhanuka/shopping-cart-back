@@ -21,9 +21,9 @@ public class CartController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto> create(
+    public ResponseEntity<ResponseDto> addToCart(
             @RequestBody @Valid CartDto dto) {
-        return cartService.create(dto);
+        return cartService.addToCart(dto);
     }
 
     @GetMapping
