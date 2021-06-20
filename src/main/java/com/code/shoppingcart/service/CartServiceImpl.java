@@ -49,34 +49,124 @@ public class CartServiceImpl implements CartService {
         try {
 
             int qty;
-            double price;
+            double price = 0;
 
             if ("cartoon".equals(dto.getOrderType())) {
 
                 qty = productEntity.getUnitsPerCartoon() * dto.getQty();
-                price = dto.getQty() * productEntity.getPricePerCartoon();
 
             } else {
 
                 qty = dto.getQty();
-                price = (productEntity.getPricePerCartoon() / productEntity.getUnitsPerCartoon() * dto.getQty())
-                        * (1 + productEntity.getUnitDiscount());
 
             }
 
             CartEntity cartEntity;
             Optional<CartEntity> existing = cartRepository.findByUserIdAndProductId(dto.getUserId(), dto.getProductId());
 
-            double roundedPrice = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
             if (existing.isPresent()) {
+
+                log.info("CART IS PRESENT");
+
                 cartEntity = existing.get();
-                cartEntity.setPrice(cartEntity.getPrice() + roundedPrice);
-                cartEntity.setQty(cartEntity.getQty() + qty);
+                qty = cartEntity.getQty() + qty;
+
+                log.info("NEW QUANTITY IS: {}", qty);
+
+                // Get the discount margin (E.x minimum cartoons to be bought to get the discount)
+                int discountMargin = productEntity.getDiscountEligibility();
+                log.info("DISCOUNT MARGIN FOR CARTOON: {}", discountMargin);
+
+                // Calculate minimum units to eligible to discount based on cartoons
+                int minimumQtyToDiscount = discountMargin * productEntity.getUnitsPerCartoon();
+                log.info("MINIMUM ELIGIBLE UNITS FOR DISCOUNT: {}", minimumQtyToDiscount);
+
+                // Checking whether entered qty eligible or not
+                if (qty >= minimumQtyToDiscount) {
+
+                    // Calculate the excess qty
+                    int excessQty = (qty % productEntity.getUnitsPerCartoon());
+
+                    // Calculate cartoons
+                    int cartoons = (qty / productEntity.getUnitsPerCartoon());
+
+                    log.info("CARTOONS: {} , UNITS {} ", cartoons, excessQty);
+
+                    double cartoonsPrice = 0;
+
+                    if (cartoons >= productEntity.getDiscountEligibility()) {
+
+                        // Applying discount for cartoons if eligible
+                        cartoonsPrice = (cartoons * (1 - (productEntity.getCartoonDiscount())) * productEntity.getPricePerCartoon());
+                    }else{
+                        // if not calculate as usual
+                        cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
+                    }
+
+                    // calculate price for excess qty it should multiply by 1 + penalty discount
+                    double priceForExcessUnits = excessQty * (productEntity.getPricePerCartoon() * (1 + productEntity.getUnitDiscount())) / productEntity.getUnitsPerCartoon();
+
+                    log.info("CARTOONS PRICE: {} , UNITS PRICE {} ", cartoonsPrice, priceForExcessUnits);
+
+                    price = cartoonsPrice + priceForExcessUnits;
+
+                    price = BigDecimal.valueOf(price).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+                }else{
+
+                    // Calculate the excess qty
+                    int excessQty = (qty % productEntity.getUnitsPerCartoon());
+
+                    // Calculate cartoons
+                    int cartoons = (qty / productEntity.getUnitsPerCartoon());
+
+                    log.info("CARTOONS: {} , UNITS {} ", cartoons, excessQty);
+
+                    // calculate as usual
+                    double cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
+
+                    // calculate price for excess qty it should multiply by 1 + penalty discount
+                    double priceForExcessUnits = excessQty * (productEntity.getPricePerCartoon() * (1 + productEntity.getUnitDiscount())) / productEntity.getUnitsPerCartoon();
+
+                    log.info("CARTOONS PRICE: {} , UNITS PRICE {} ", cartoonsPrice, priceForExcessUnits);
+
+                    price = cartoonsPrice + priceForExcessUnits;
+
+                    price = BigDecimal.valueOf(price).setScale(3, RoundingMode.HALF_UP).doubleValue();
+
+                }
+
+                cartEntity = existing.get();
+                cartEntity.setPrice(price);
+                cartEntity.setQty(qty);
+
             } else {
                 cartEntity = dto.toEntity();
-                cartEntity.setPrice(roundedPrice);
+
+                // Calculate the excess qty
+                int excessQty = (qty % productEntity.getUnitsPerCartoon());
+
+                // Calculate cartoons
+                int cartoons = (qty / productEntity.getUnitsPerCartoon());
+
+                log.info("CARTOONS: {} , UNITS {} ", cartoons, excessQty);
+
+                // calculate as usual
+                double cartoonsPrice = (cartoons * productEntity.getPricePerCartoon());
+
+                // calculate price for excess qty it should multiply by 1 + penalty discount
+                double priceForExcessUnits = excessQty * (productEntity.getPricePerCartoon() * (1 + productEntity.getUnitDiscount())) / productEntity.getUnitsPerCartoon();
+
+                log.info("CARTOONS PRICE: {} , UNITS PRICE {} ", cartoonsPrice, priceForExcessUnits);
+
+                price = cartoonsPrice + priceForExcessUnits;
+
+                price = BigDecimal.valueOf(price).setScale(3, RoundingMode.HALF_UP).doubleValue();
+
+                cartEntity.setPrice(price);
                 cartEntity.setQty(qty);
+
             }
 
             cartRepository.save(cartEntity);
