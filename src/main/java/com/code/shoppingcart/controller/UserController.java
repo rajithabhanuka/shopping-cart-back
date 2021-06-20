@@ -21,6 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     *
+     * @param userDto
+     * @return response entity with saved user details
+     */
     @PostMapping
     public ResponseEntity<ResponseDto> createUser(@Valid @RequestBody UserDto userDto) {
         return userService.create(userDto);

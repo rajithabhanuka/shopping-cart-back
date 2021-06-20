@@ -37,6 +37,11 @@ public class CartServiceImpl implements CartService {
         this.productRepository = productRepository;
     }
 
+    /**
+     *
+     * @param dto has cart details
+     * @return list of cart items in the database
+     */
     @Override
     public ResponseEntity<ResponseDto> addToCart(CartDto dto) {
 
@@ -112,6 +117,11 @@ public class CartServiceImpl implements CartService {
         return ResponseEntity.status(HttpStatus.OK).body(genericPage);
     }
 
+    /**
+     *
+     * @param userId
+     * @return list of cart items with the pagination
+     */
     @Override
     public ResponseEntity<ResponseDto> getByUserId(int userId) {
 
@@ -140,6 +150,12 @@ public class CartServiceImpl implements CartService {
 
     }
 
+    /**
+     *
+     * @param qty
+     * @param productEntity
+     * @return the final value of the each items qty
+     */
     private double calculatePrice(int qty, ProductEntity productEntity) {
 
         double price;

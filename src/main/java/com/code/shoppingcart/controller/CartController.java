@@ -25,6 +25,11 @@ public class CartController {
         return cartService.addToCart(dto);
     }
 
+    /**
+     *
+     * @param userId
+     * @return list of cart items with the pagination
+     */
     @GetMapping
     public ResponseEntity<ResponseDto> get(@RequestParam("userId") int userId) {
         return cartService.getByUserId(userId);

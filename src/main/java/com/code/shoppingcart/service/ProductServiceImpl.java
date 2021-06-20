@@ -35,6 +35,12 @@ public class ProductServiceImpl implements ProductService{
                 .body(productRepository.save(productEntity).toDto());
     }
 
+    /**
+     *
+     * @param page
+     * @param size
+     * @return al the products with pagination
+     */
     @Override
     public ResponseEntity<ResponseDto> getAll(int page, int size) {
 

@@ -32,7 +32,11 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
-
+    /**
+     *
+     * @param request
+     * @return the Jwt token with user details
+     */
     @PostMapping(value = "/authenticate")
     public ResponseEntity<JwtResponse> authenticate(@RequestBody JwtRequest request) {
 

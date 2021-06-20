@@ -26,6 +26,12 @@ public class ProductController {
         return productService.create(dto);
     }
 
+    /**
+     *
+     * @param page for pagination
+     * @param size for pagination
+     * @return list of products in the database with pagination
+     */
     @GetMapping
     public ResponseEntity<ResponseDto> getProducts(
             @RequestParam("page") int page,

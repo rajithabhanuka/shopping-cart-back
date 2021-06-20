@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.encode(password);
     }
 
+    /**
+     *
+     * @param userDto
+     * @return just created user details
+     */
     @Override
     public ResponseEntity<ResponseDto> create(UserDto userDto) {
         UserEntity userEntity = userDto.toEntity();
@@ -55,6 +60,11 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.CREATED).body(userEntity.toDto());
     }
 
+    /**
+     *
+     * @param userName
+     * @return user details object which in Spring boot
+     */
     @Override
     public UserDetails loadUserByUsername(String userName) {
 
