@@ -34,4 +34,15 @@ public class CartController {
     public ResponseEntity<ResponseDto> get(@RequestParam("userId") int userId) {
         return cartService.getByUserId(userId);
     }
+
+    /**
+     * @param cartId cart item id
+     * @param userId user id
+     * @return list of cart items with the pagination
+     */
+    @DeleteMapping(value = "/{cartId}/{userId}")
+    public ResponseEntity<ResponseDto> deleteByCartId(@RequestParam("cartId") int cartId,
+                                                      @RequestParam("userId") int userId) {
+        return cartService.deleteCartById(cartId, userId);
+    }
 }

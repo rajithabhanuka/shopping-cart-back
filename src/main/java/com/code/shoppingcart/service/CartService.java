@@ -9,4 +9,6 @@ public interface CartService {
     ResponseEntity<ResponseDto> addToCart(CartDto dto);
 
     ResponseEntity<ResponseDto> getByUserId(int userId);
+
+    ResponseEntity<ResponseDto> deleteCartById(int cartId, int userId);
 }

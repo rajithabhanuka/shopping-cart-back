@@ -49,8 +49,6 @@ public class CartServiceImpl implements CartService {
                 new RecordNotFoundException(String.format("Product object not found for : %s",
                         dto.getProductId()), ""));
 
-        GenericPage<CartDto> genericPage = new GenericPage<>();
-
         try {
 
             int qty;
@@ -103,18 +101,11 @@ public class CartServiceImpl implements CartService {
 
             cartRepository.save(cartEntity);
 
-            Page<CartEntity> cartEntityPage = cartRepository
-                    .findByUserIdAndQtyGreaterThan(dto.getUserId(), 0,
-                            PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
-
-            genericPage.setData(cartEntityPage.stream().map(CartEntity::toDto).collect(Collectors.toList()));
-            BeanUtils.copyProperties(cartEntityPage, genericPage);
-
         } catch (Exception e) {
             log.error("ERROR WHILE SAVING CART {}", e.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(genericPage);
+        return getResponse(dto.getUserId());
     }
 
     /**
@@ -125,16 +116,19 @@ public class CartServiceImpl implements CartService {
     @Override
     public ResponseEntity<ResponseDto> getByUserId(int userId) {
 
-        GenericPage<CartDto> genericPage = new GenericPage<>();
+        return getResponse(userId);
+    }
 
-        Page<CartEntity> cartEntityPage = cartRepository
-                .findByUserIdAndQtyGreaterThan(userId, 0,
-                        PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
+    @Override
+    public ResponseEntity<ResponseDto> deleteCartById(int cartId, int userId) {
 
-        genericPage.setData(cartEntityPage.stream().map(this::setProductName).collect(Collectors.toList()));
-        BeanUtils.copyProperties(cartEntityPage, genericPage);
+        CartEntity cartEntity = cartRepository.findByIdAndUserId(cartId, userId).orElseThrow(() ->
+                new RecordNotFoundException(String.format("Cart object not found for cart id: %s user id: %s ",
+                        cartId, userId), ""));
 
-        return ResponseEntity.status(HttpStatus.OK).body(genericPage);
+        cartRepository.delete(cartEntity);
+
+        return getResponse(userId);
     }
 
     CartDto setProductName(CartEntity cartEntity) {
@@ -190,5 +184,19 @@ public class CartServiceImpl implements CartService {
 
         return price;
 
+    }
+
+    private ResponseEntity<ResponseDto> getResponse(int userId) {
+
+        Page<CartEntity> cartEntityPage = cartRepository
+                .findByUserIdAndQtyGreaterThan(userId, 0,
+                        PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "id")));
+
+        GenericPage<CartDto> genericPage = new GenericPage<>();
+
+        genericPage.setData(cartEntityPage.stream().map(this::setProductName).collect(Collectors.toList()));
+        BeanUtils.copyProperties(cartEntityPage, genericPage);
+
+        return ResponseEntity.status(HttpStatus.OK).body(genericPage);
     }
 }
