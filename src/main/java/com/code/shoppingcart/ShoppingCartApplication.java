@@ -23,7 +23,8 @@ public class ShoppingCartApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping(frontEndUrl);
+				registry.addMapping(frontEndUrl)
+						.allowedMethods("GET", "POST", "DELETE");
 			}
 		};
 	}

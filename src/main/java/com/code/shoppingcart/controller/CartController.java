@@ -40,7 +40,7 @@ public class CartController {
      * @param userId user id
      * @return list of cart items with the pagination
      */
-    @DeleteMapping(value = "/{cartId}/{userId}")
+    @DeleteMapping(value = "/{cartId}/users/{userId}")
     public ResponseEntity<ResponseDto> deleteByCartId(@PathVariable("cartId") int cartId,
                                                       @PathVariable("userId") int userId) {
         return cartService.deleteCartById(cartId, userId);

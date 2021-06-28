@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 @Data
 @Entity(name = "cart")
+@Table(indexes = {@Index(name = "uniqueUserProduct", columnList = "user_id, product_id", unique = true)})
 public class CartEntity {
 
     @Id
